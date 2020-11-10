@@ -1,4 +1,4 @@
-package com.taozi;
+package com.taozi.sort;
 
 public class Code02_BubbleSort implements Code00_Sort {
 

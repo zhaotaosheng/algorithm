@@ -1,4 +1,4 @@
-package com.taozi;
+package com.taozi.sort;
 
 @FunctionalInterface
 public interface Code00_Sort {

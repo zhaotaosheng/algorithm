@@ -1,4 +1,4 @@
-package com.taozi;
+package com.taozi.sort;
 
 public class Code01_SelectionSort implements Code00_Sort {
 
