@@ -18,9 +18,10 @@ public interface Code00_Sort {
      * @param j   下标2
      */
     default void swap(int[] arr, int i, int j) {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+        if (i == j) return;
+        arr[i] = arr[i] ^ arr[j];
+        arr[j] = arr[i] ^ arr[j];
+        arr[i] = arr[i] ^ arr[j];
     }
 
     /**
@@ -76,5 +77,17 @@ public interface Code00_Sort {
             }
         }
         return true;
+    }
+
+    /**
+     * 打印数组元素
+     *
+     * @param arr 要打印的数组
+     */
+    static void print(int[] arr) {
+        for (int i : arr) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
     }
 }

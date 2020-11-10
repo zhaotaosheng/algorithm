@@ -8,13 +8,15 @@ public class Code00_Test {
         int times = 10_000;
         int maxSize = 10_000;
         int maxValue = 10_000;
-        Code00_Sort sorter = new Code01_SelectionSort();
+        Code00_Sort sorter1 = new Code01_SelectionSort();
+        Code00_Sort sorter2 = new Code01_SelectionSort.Code01_SelectionSort_DoubleIndex();
         for (int i = 0; i < times; i++) {
             int[] arr = Code00_Sort.generateRandomArray(maxSize, maxValue);
             int[] copy1 = Arrays.copyOf(arr, arr.length);
             int[] copy2 = Arrays.copyOf(arr, arr.length);
-            sorter.sort(copy1);
-            Arrays.sort(copy2);
+            sorter1.sort(copy1);
+            sorter2.sort(copy2);
+//            Arrays.sort(copy2);
             if (!Code00_Sort.isEqual(copy1, copy2)) {
                 System.out.println("出现问题");
                 print(arr);
