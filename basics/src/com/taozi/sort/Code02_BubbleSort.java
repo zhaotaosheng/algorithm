@@ -1,5 +1,11 @@
 package com.taozi.sort;
 
+/**
+ * 冒泡排序，平均时间复杂度n^2，最坏时间复杂度n^2，最好时间复杂度n，空间复杂度1，稳定排序
+ *
+ * @author ZhaoTaoSheng
+ * @since 2020/11/10 20:02
+ */
 public class Code02_BubbleSort implements Code00_Sort {
 
     @Override

@@ -1,5 +1,11 @@
 package com.taozi.sort;
 
+/**
+ * 排序接口
+ *
+ * @author ZhaoTaoSheng
+ * @since 2020/11/10 20:02
+ */
 @FunctionalInterface
 public interface Code00_Sort {
 

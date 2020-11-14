@@ -1,5 +1,11 @@
 package com.taozi.sort;
 
+/**
+ * 选择排序，平均时间复杂度n^2，最坏时间复杂度n^2，最好时间复杂度n^2，空间复杂度1，不稳定排序
+ *
+ * @author ZhaoTaoSheng
+ * @since 2020/11/10 20:02
+ */
 public class Code01_SelectionSort implements Code00_Sort {
 
     public void sort(int[] arr) {
@@ -22,6 +28,9 @@ public class Code01_SelectionSort implements Code00_Sort {
         }
     }
 
+    /**
+     * 鸡尾酒排序，最大最小值双指针，表面减少循环实际并没有时间优化，甚至更慢了
+     */
     static class Code01_SelectionSort_DoubleIndex implements Code00_Sort {
 
         @Override
