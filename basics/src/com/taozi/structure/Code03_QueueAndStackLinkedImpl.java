@@ -6,7 +6,7 @@ package com.taozi.structure;
  * @author ZhaoTaoSheng
  * @since 2020/11/21 18:39
  */
-public class Code03_QueueAndStackListImpl {
+public class Code03_QueueAndStackLinkedImpl {
 
     /**
      * 双链表节点
@@ -51,7 +51,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @param value 新节点值
          */
-        public void put(T value) {
+        public void add(T value) {
             Node<T> cur = new Node<>(value);
             if (head == null) {
                 head = cur;
@@ -73,7 +73,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @return 队列头数据
          */
-        public T take() {
+        public T poll() {
             T value = null;
             if (head != null) {
                 value = head.value;
@@ -121,7 +121,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @param value 新的head节点值
          */
-        public void putForHead(T value) {
+        public void addForHead(T value) {
             Node<T> cur = new Node<>(value);
             // 为空说明队列里没有节点，初始化head和tail节点
             if (head == null) {
@@ -141,7 +141,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @param value 新的tail节点值
          */
-        public void putForTail(T value) {
+        public void addForTail(T value) {
             Node<T> cur = new Node<>(value);
             // 为空说明队列里没有节点，初始化head和tail节点
             if (tail == null) {
@@ -161,7 +161,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @return head节点值
          */
-        public T takeForHead() {
+        public T pollForHead() {
             if (head == null) return null;
             Node<T> cur = head;
             // 队列中只有一个节点时head和tail才相等
@@ -183,7 +183,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @return head节点值
          */
-        public T takeForTail() {
+        public T pollForTail() {
             if (tail == null) return null;
             Node<T> cur = tail;
             // 队列中只有一个节点时head和tail才相等
@@ -222,7 +222,7 @@ public class Code03_QueueAndStackListImpl {
          *
          * @param value 新的栈顶值
          */
-        public void poll(T value) {
+        public void push(T value) {
             Node<T> cur = new Node<>(value);
             // 栈顶不为null的时候说明栈内有元素
             if (stackTop != null) {
