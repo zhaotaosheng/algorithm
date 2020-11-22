@@ -110,4 +110,196 @@ public class Code04_MergeSort implements Code00_Sort {
             }
         }
     }
+
+    /**
+     * 在一个数组中，一个数左边比它小的数的总和，叫数的小和，
+     * 所有数的小和累加起来，叫数组小和。求数组小和。
+     */
+    private static class Code04_MergeSort_SmallSum {
+
+        public int smallSum(int[] arr) {
+            if (arr == null || arr.length < 2) {
+                return 0;
+            }
+            return process(arr, 0, arr.length - 1);
+        }
+
+        /**
+         * 在每次做merge时产生的最小和累加起来就是数组最小和
+         *
+         * @param arr   数组
+         * @param left  左边界
+         * @param right 右边界
+         * @return 最小和
+         */
+        private int process(int[] arr, int left, int right) {
+            if (left == right) return 0;
+            int middle = left + ((right - left) >> 1);
+            // 左侧数组merge时产生的最小和 + 右侧数组merge时产生的最小和 + 当前两侧数组merge产生的最小和
+            return process(arr, left, middle)
+                    + process(arr, middle + 1, right)
+                    + merge(arr, left, middle, right);
+        }
+
+        /**
+         * 每次merge排序时，落右数组数据时不用记录，说明此时左侧比它小的都记录完了
+         *
+         * @param arr    数组
+         * @param left   左侧数组的左边界
+         * @param middle 左侧数组的右边界，middle+1是右侧数组的左边界
+         * @param right  右侧数组的的右边界
+         * @return 此次merge的最小和
+         */
+        private int merge(int[] arr, int left, int middle, int right) {
+            int[] help = new int[right - left + 1];
+            int index = 0;
+            int p1 = left;
+            int p2 = middle + 1;
+            // 用来保存最小和
+            int result = 0;
+            while (p1 <= middle && p2 <= right) {
+                // 当p1位置数小于p2位置数时，因为右侧有序，则此时p2到right的位置数都大于p1位置数
+                // 那么这个数arr[p1]就应该乘以数量(right - p2 + 1)加到result中
+                result += arr[p1] < arr[p2] ? arr[p1] * (right - p2 + 1) : 0;
+                // p1位置数等于p2位置数时，因为要判断p1位置数是否比p2后边的小，所以此时应当落p2
+                help[index++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+            }
+            while (p1 <= middle) {
+                help[index++] = arr[p1++];
+            }
+            while (p2 <= right) {
+                help[index++] = arr[p2++];
+            }
+            for (int i = 0; i < help.length; i++) {
+                arr[left + i] = help[i];
+            }
+            return result;
+        }
+    }
+
+    /**
+     * 在一个数组中，任何一个前面的数a，和任何一个后面的数b，
+     * 如果(a,b)是降序的，就称为逆序对。返回数组中所有的逆序对个数。
+     */
+    private static class Code04_MergeSort_ReversePair {
+
+        public int reversePair(int[] arr) {
+            if (arr == null || arr.length < 2) {
+                return 0;
+            }
+            return process(arr, 0, arr.length - 1);
+        }
+
+        /**
+         * 在每次做merge时产生逆序对的个数
+         *
+         * @param arr   数组
+         * @param left  左边界
+         * @param right 右边界
+         * @return 逆序对个数
+         */
+        private int process(int[] arr, int left, int right) {
+            if (left == right) return 0;
+            int middle = left + ((right - left) >> 1);
+            // 左侧数组merge时产生的逆序对个数 + 右侧数组merge时产生的逆序对个数 + 当前两侧数组merge产生的逆序对个数
+            return process(arr, left, middle)
+                    + process(arr, middle + 1, right)
+                    + merge(arr, left, middle, right);
+        }
+
+        /**
+         * 每次merge排序时，落右数组数据时不用记录，说明此时左侧数都比它小或相等
+         *
+         * @param arr    数组
+         * @param left   左侧数组的左边界
+         * @param middle 左侧数组的右边界，middle+1是右侧数组的左边界
+         * @param right  右侧数组的的右边界
+         * @return 此次merge产生的逆序对个数
+         */
+        private int merge(int[] arr, int left, int middle, int right) {
+            int[] help = new int[right - left + 1];
+            int index = help.length - 1;
+            int p1 = middle;
+            int p2 = right;
+            // 用来保存逆序对个数
+            int result = 0;
+            // 两侧数组从右往左移动指针
+            while (p1 >= left && p2 >= middle + 1) {
+                // 当p1位置数大于p2位置数时，说明p1位置数大于 middle+1~p2 所有的数
+                // 所以逆序对的个数应该是(p2 - middle)
+                result += arr[p1] > arr[p2] ? (p2 - middle) : 0;
+                // p1和p2位置数比较，谁大落谁，从大往小方向落
+                // 如果相等应该落右侧数，因为要计算小于左边的数，则左侧不能动
+                help[index--] = arr[p1] > arr[p2] ? arr[p1--] : arr[p2--];
+            }
+            while (p1 >= left) {
+                help[index--] = arr[p1--];
+            }
+            while (p2 >= middle + 1) {
+                help[index--] = arr[p2--];
+            }
+            for (int i = 0; i < help.length; i++) {
+                arr[left + i] = help[i];
+            }
+            return result;
+        }
+    }
+
+    /**
+     * 在一个数组中，对于每个数num，求有多少个后面的数 * 2依然<num，求总个数
+     */
+    private class Code04_MergeSort_BiggerThanRightTwice {
+
+        public int biggerThanRightTwice(int[] arr) {
+            if (arr == null || arr.length < 2) {
+                return 0;
+            }
+            return process(arr, 0, arr.length - 1);
+        }
+
+        /**
+         * 在每次做merge时产生符合结果的个数
+         *
+         * @param arr   数组
+         * @param left  左边界
+         * @param right 右边界
+         * @return 符合结果的个数
+         */
+        private int process(int[] arr, int left, int right) {
+            if (left == right) return 0;
+            int middle = left + ((right - left) >> 1);
+            // 左侧数组merge时产生的逆序对个数 + 右侧数组merge时产生的逆序对个数 + 当前两侧数组merge产生的逆序对个数
+            return process(arr, left, middle)
+                    + process(arr, middle + 1, right)
+                    + merge(arr, left, middle, right);
+        }
+
+        /**
+         * 每次merge排序时，遍历左侧数组同时滑动右侧数组指针，找到符合条件的最远下标
+         *
+         * @param arr    数组
+         * @param left   左侧数组的左边界
+         * @param middle 左侧数组的右边界，middle+1是右侧数组的左边界
+         * @param right  右侧数组的的右边界
+         * @return 此次merge产生的结果个数
+         */
+        private int merge(int[] arr, int left, int middle, int right) {
+            // 用来保存结果个数
+            int result = 0;
+            // 目前囊括进来的数，是从[M+1,windowR)
+            int windowR = middle + 1;
+            // 遍历左侧数组元素
+            for (int i = left; i <= middle; i++) {
+                // 遍历右侧得到滑动最远的下标
+                while (windowR <= right && arr[i] > (arr[windowR] << 1)) {
+                    // 滑动右侧数组下标
+                    windowR++;
+                }
+                result += windowR - middle + 1;
+            }
+
+            Code04_MergeSort.this.merge(arr, left, middle, right);
+            return result;
+        }
+    }
 }
