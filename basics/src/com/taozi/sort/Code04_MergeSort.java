@@ -302,4 +302,135 @@ public class Code04_MergeSort implements Code00_Sort {
             return result;
         }
     }
+
+    /**
+     * 给定一个数组arr，两个整数lower和upper，返回arr中有多少个子数组的累加和在[lower,upper]范围上
+     * 举例：{-14，2，8，-21，25，0，12，-4，4，10}，[-10，10]
+     * 暴力方法：
+     * (0,0)=-14 (1,1)=2   (2,2)=8  (3,3)=-21
+     * ----------(0,1)=-12 (1,2)=10 (3,3)=-13
+     * --------------------(0,2)=-4 (3,3)=-9
+     * -----------------------------(3,3)=-25......
+     * 复杂度：枚举所有子数组(N ~ 1的等差数列和)序列O(n^2)，每个序列遍历求和O(n)，总复杂度O(n^3)
+     */
+    private static class Code04_MergeSort_CountOfRangeSum {
+
+        /**
+         * 优化方法前置知识：
+         * 1.数组i ~ j位置的和，等于0 ~ j位置的和减去0 ~ i-1位置的和
+         * --例子(3,5)=(0,5)-(0,2)在例题中就是4 = 0 - -4
+         * 2.数组0 ~ j位置的和为x，那么以j为结尾的子数组中，如果(0,i)值在[x-upper,x-lower]上，那么(i+1,j)就符合
+         * --例子(0,10)=22，如果(0,i)值在[12,32]之间，那么(i+1,10)子数组就会在[-10，10]，比如i = 1，(0,1) = 12
+         * 3.前缀和数组，prefixSum[i] = (0,i)，前缀和数组i位置表示原数组0位置到i位置的和
+         *
+         * @param arr   数组
+         * @param lower 累加和下界
+         * @param upper 累加和上界
+         * @return 在界限内子数组个数
+         */
+        public static int countRangeSum(int[] arr, int lower, int upper) {
+            if (arr == null || arr.length < 1) {
+                return 0;
+            }
+            long[] prefixSum = new long[arr.length];
+            prefixSum[0] = arr[0];
+            // 构建前缀和数组
+            for (int i = 1; i < arr.length; i++) {
+                prefixSum[i] = prefixSum[i - 1] + arr[i];
+            }
+            // 在0 ~ arr.length - 1范围上搜索
+            return process(prefixSum, 0, arr.length - 1, lower, upper);
+        }
+
+        /**
+         * @param prefixSum 前缀和数组
+         * @param left      搜索范围下界
+         * @param right     搜索范围上界
+         * @param lower     累加和下界
+         * @param upper     累加和上界
+         * @return 在界限内子数组个数
+         */
+        public static int process(long[] prefixSum, int left, int right, int lower, int upper) {
+            // base case，归并分割的最小粒度，一元组。
+            // 代表prefixSum的[0,0][1,1][2,2][3,3][4,4]....这种子序列，也就是arr的(0,0)(0,1)(0,2)(0,3)(0,4)....
+            if (left == right) {
+                return prefixSum[left] >= lower && prefixSum[left] <= upper ? 1 : 0;
+            }
+            int middle = left + ((right - left) >> 1);
+            return process(prefixSum, left, middle, lower, upper)
+                    + process(prefixSum, middle + 1, right, lower, upper)
+                    + merge(prefixSum, left, middle, right, lower, upper);
+        }
+
+        /**
+         * 在一元组合并到二元组再到四元组过程中，首先每次的右侧数组是不会重复的，并且是全部都会覆盖到的，什么意思呢？一元组是base case，
+         * 一元组合并到二元组时，它判断的是prefixSum[0|1][2|3][4|5][6|7]...也就是arr的(1,1)(3,3)(5,5)(7,7)...
+         * 二元组合并到四元组时，它判断的是prefixSum[0,1|2,3][4,5|6,7]...也就是arr的(1,2)(2,2)(1,3)(2,3)(5,6)(6,6)(5,7)(6,7)...
+         * <p>
+         * 1.根据前置2的知识我们知道，在merge时右侧的每一个数如果能在左侧找到满足前置2条件的数，那这个左侧数就是一种答案
+         * 2.对每一个右侧数来讲他想要找到的[x-upper,x-lower]是固定的，并且merge时左右两侧各自有序，
+         * --那么左侧可以维护两个指针来形成一个窗口范围，窗口内的数符合范围，并且两个指针只需要向右滑动即可
+         * 3.我们还需要一个指针indexRight记录右侧走到的位置，这个指针只需要向右滑动，滑过的位置代表统计完的，而且右侧是有序的
+         * --那么indexRight + 1的[x-upper,x-lower]一定会比indexRight的[x`-upper,x`-lower]上下界都要大，也就是
+         * --它的窗口一定在前一个窗口的中后方，肯定不会在前边。所以此时对应的左侧指针不需要向左归位，继续右滑即可
+         * <p/>
+         * 综上merge的过程复杂度是O(n)
+         *
+         * @param prefixSum 前缀和数组
+         * @param left      搜索范围下界
+         * @param middle    搜索范围中点
+         * @param right     搜索范围上界
+         * @param lower     累加和下界
+         * @param upper     累加和上界
+         * @return 在merge过程中落在累加和界限内子数组个数
+         */
+        private static int merge(long[] prefixSum, int left, int middle, int right, int lower, int upper) {
+            // 最终要返回的结果
+            int result = 0;
+            // 左侧的窗口[windowLeft,windowRight)，都从左侧数组开头开始滑动
+            int windowLeft = left;
+            int windowRight = left;
+            // 右侧记录的指针，最开始从右侧数组的开头开始滑动
+            int indexRight = middle + 1;
+            // 当用来记录的指针没有滑出边界时
+            while (indexRight <= right) {
+                // 根据前置2定义出来的满足题意的左侧数应在的范围
+                long prefixSumLower = prefixSum[indexRight] - upper;
+                long prefixSumUpper = prefixSum[indexRight] - lower;
+                // 如果窗口右侧没有出界，并且该窗口数还在范围内，则右滑
+                while (windowRight <= middle && prefixSum[windowRight] <= prefixSumUpper) {
+                    // 为什么没有prefixSum[windowRight] >= prefixSumLower判断? 因为小于prefixSumLower的时候窗口左右侧都会一起滑
+                    // 大于这个数的时候窗口左侧是不会动的，如果加上这个条件就可能出现windowRight < windowLeft的情况
+                    windowRight++;
+                }
+                // 如果窗口左侧没有出界，并且该窗口数不在范围内，则右滑
+                while (windowLeft <= middle && prefixSum[windowLeft] < prefixSumLower) {
+                    windowLeft++;
+                }
+                // 左右窗口中间的数就是当前右侧指针指向的数的所有答案
+                result += windowRight - windowLeft;
+                // 滑动右侧指针
+                indexRight++;
+            }
+
+            // 常规的归并排序
+            long[] help = new long[right - left + 1];
+            int index = 0;
+            int p1 = left;
+            int p2 = middle + 1;
+            while (p1 <= middle && p2 <= right) {
+                help[index++] = prefixSum[p1] <= prefixSum[p2] ? prefixSum[p1++] : prefixSum[p2++];
+            }
+            while (p1 <= middle) {
+                help[index++] = prefixSum[p1++];
+            }
+            while (p2 <= right) {
+                help[index++] = prefixSum[p2++];
+            }
+            for (int i = 0; i < help.length; i++) {
+                prefixSum[left + i] = help[i];
+            }
+            return result;
+        }
+    }
 }
