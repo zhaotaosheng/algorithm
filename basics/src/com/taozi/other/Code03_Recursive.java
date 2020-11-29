@@ -1,4 +1,4 @@
-package com.taozi.recursive;
+package com.taozi.other;
 
 /**
  * 递归获取数组中最大数
@@ -12,7 +12,7 @@ package com.taozi.recursive;
  * @author ZhaoTaoSheng
  * @since 2020/11/21 22:59
  */
-public class Code01_GetMax {
+public class Code03_Recursive {
 
     public static int getMax(int[] arr) {
         return getMax(arr, 0, arr.length - 1);
