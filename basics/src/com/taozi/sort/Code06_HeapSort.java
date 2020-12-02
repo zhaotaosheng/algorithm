@@ -1,8 +1,6 @@
 package com.taozi.sort;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * 堆排序，最坏、最优、平均时间复杂度N*logN，空间复杂度1，不稳定排序
@@ -244,5 +242,92 @@ public class Code06_HeapSort implements Code00_Sort {
             res = Math.max(res, heap.size());
         }
         return res;
+    }
+
+    /**
+     * 加强堆，对于系统提供的堆功能更丰富与强大，系统提供的堆通常只提供弹、入，仅仅能操作堆顶，堆内部都是黑盒
+     * 比如我不知道堆内有哪些元素，如何删除堆内某个元素，堆内某个元素的权重变了该怎么调整，通过增加反向索引表来辅助实现
+     *
+     * @param <T>
+     */
+    private class HeapGreater<T> {
+        private List<T> heap;
+        private Map<T, Integer> index;
+        private int heapSize;
+        private Comparator<? super T> comparator;
+
+        public HeapGreater(Comparator<T> comparator) {
+            this.heap = new ArrayList<>();
+            this.index = new HashMap<>();
+            this.heapSize = 0;
+            this.comparator = comparator;
+        }
+
+        // 判断堆里是否有此元素
+        public boolean contains(T obj) {
+            return index.containsKey(obj);
+        }
+
+        // 移除某个元素
+        public void remove(T obj) {
+            T endElement = heap.get(heapSize - 1);
+            Integer index = this.index.get(obj);
+            this.index.remove(obj);
+            this.heap.remove(--heapSize);
+            if (obj != endElement) {
+                this.heap.set(index, endElement);
+                this.index.put(endElement, index);
+                adjust(index);
+            }
+        }
+
+        // 堆中新增一个元素
+        public void push(T obj) {
+            this.heap.add(obj);
+            this.index.put(obj, heapSize);
+            heapInsert(heapSize++);
+        }
+
+        // 堆中弹出一个元素
+        public T pop() {
+            T res = this.heap.get(0);
+            remove(res);
+            return res;
+        }
+
+        // 堆内调整
+        private void adjust(int index) {
+            heapInsert(index);
+            heapify(index);
+        }
+
+        private void heapInsert(int index) {
+            while (comparator.compare(heap.get(index), heap.get((index - 1) / 2)) < 0) {
+                swap(index, (index - 1) / 2);
+                index = (index - 1) / 2;
+            }
+        }
+
+        private void heapify(int index) {
+            int left = index * 2 + 1;
+            while (left < heapSize) {
+                int less = left + 1 < heapSize
+                        && comparator.compare(heap.get(left + 1), heap.get(left)) < 0 ? left + 1 : left;
+                if (comparator.compare(heap.get(less), heap.get(index)) >= 0) return;
+                swap(less, index);
+                index = less;
+                left = index * 2 + 1;
+            }
+        }
+
+        // 交换两个位置的元素
+        private void swap(int i, int j) {
+            T originI = heap.get(i);
+            T originJ = heap.get(j);
+            heap.set(i, originJ);
+            heap.set(j, originI);
+            index.put(originJ, i);
+            index.put(originI, j);
+        }
     }
 }
