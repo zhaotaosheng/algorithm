@@ -1,5 +1,7 @@
 package com.taozi.sort;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -193,5 +195,54 @@ public class Code06_HeapSort implements Code00_Sort {
                 smallRootHeap.add(arr[i + k + 1]);
             }
         }
+    }
+
+    /**
+     * 最大线段重合问题（用堆的实现）
+     * 给定很多线段，每个线段都有两个数[start, end]，
+     * 表示线段开始位置和结束位置，左右都是闭区间
+     * 规定：
+     * 1）线段的开始和结束位置一定都是整数值
+     * 2）线段重合区域的长度必须>=1
+     * 返回线段最多重合区域中，包含了几条线段
+     *
+     * @param arr 二维线段数组
+     * @return 最大重叠数量
+     */
+    private int LineOverlapMax(int[][] arr) {
+        // 辅助用的线段类
+        class Line {
+            private int start;
+            private int end;
+
+            public Line(int start, int end) {
+                this.start = start;
+                this.end = end;
+            }
+        }
+        // 将二位数组转为一维线段数组
+        Line[] lines = new Line[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            lines[i] = new Line(arr[i][0], arr[i][1]);
+        }
+        // 根据线段的开始位置排序
+        Arrays.sort(lines, Comparator.comparingInt(line -> line.start));
+        // 构建一个小根堆用来存储结束位置
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        // 最大重叠线段数量
+        int res = 0;
+        for (int i = 0; i < lines.length; i++) {
+            Line line = lines[i];
+            // 当堆顶的数(某个线段的结束位置)小于等于当前线段起始位置，说明这两个线段肯定不会重合，将它弹出
+            // 直到堆中剩下的都是可以与当前线段重合的线段，既都可以贯穿当前线段起始位置的线段
+            while (!heap.isEmpty() && heap.peek() <= line.start) {
+                heap.poll();
+            }
+            // 将当前线段结束位置放入堆中
+            heap.add(line.end);
+            // 当前堆的大小就是贯穿当前开始位置的线段数量
+            res = Math.max(res, heap.size());
+        }
+        return res;
     }
 }
