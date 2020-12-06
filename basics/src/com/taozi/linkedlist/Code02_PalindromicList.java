@@ -8,7 +8,7 @@ import java.util.Stack;
  * @author ZhaoTaoSheng
  * @since 2020/12/6 21:06
  */
-public class Code02_isPalindromicList {
+public class Code02_PalindromicList {
     // 单链表节点
     private class Node {
         public int value;
