@@ -7,7 +7,7 @@ package com.taozi.binarytree;
  * @author ZhaoTaoSheng
  * @since 2020/12/16 20:34
  */
-public class Code12_MaxSubBSTSize {
+public class Code13_MaxSubBSTSize {
     // 二叉树节点
     private static class Node {
         public int value;
