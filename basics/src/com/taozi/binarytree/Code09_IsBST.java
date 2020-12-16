@@ -6,7 +6,7 @@ package com.taozi.binarytree;
  * @author ZhaoTaoSheng
  * @since 2020/12/15 22:04
  */
-public class Code09_isBST {
+public class Code09_IsBST {
     // 二叉树节点
     private static class Node {
         public int value;

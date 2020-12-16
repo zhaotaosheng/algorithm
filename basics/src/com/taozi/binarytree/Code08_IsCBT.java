@@ -9,7 +9,7 @@ import java.util.Queue;
  * @author ZhaoTaoSheng
  * @since 2020/12/15 20:41
  */
-public class Code08_isCBT {
+public class Code08_IsCBT {
     // 二叉树节点
     private static class Node {
         public Integer value;
