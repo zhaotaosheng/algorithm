@@ -46,7 +46,7 @@ public class Code09_isBST {
      * 所以我需要知道我左子树和右子树的信息，将子节点返回信息组合为自己的信息在返回给父节点
      *
      * @param head 当前树头节点
-     * @return 信息
+     * @return 当前树信息
      */
     public Info process(Node head) {
         // 如果当前树为空，则没有信息返回
