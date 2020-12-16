@@ -53,11 +53,11 @@ public class Code13_MaxSubBSTSize {
         if (head == null) return null;
         Info leftInfo = process(head.left);
         Info rightInfo = process(head.right);
-        // 当前数所有节点中的最小值
+        // 当前树所有节点中的最小值
         int min = head.value;
-        // 当前数所有节点中的最大值
+        // 当前树所有节点中的最大值
         int max = head.value;
-        // 当前树一共的节点数，左子树节点数 + 右子树节点数 + 1
+        // 当前树一共的节点树，左子树节点树 + 右子树节点树 + 1
         int nodes = 1;
         if (leftInfo != null) {
             min = Math.min(min, leftInfo.min);

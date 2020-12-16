@@ -45,9 +45,9 @@ public class Code12_MaxSubBSTHead {
         if (head == null) return null;
         Info leftInfo = process(head.left);
         Info rightInfo = process(head.right);
-        // 当前数所有节点中的最小值
+        // 当前树所有节点中的最小值
         int min = head.value;
-        // 当前数所有节点中的最大值
+        // 当前树所有节点中的最大值
         int max = head.value;
         // 当前树最大搜索二叉树的大小
         int subBSTSize = -1;
