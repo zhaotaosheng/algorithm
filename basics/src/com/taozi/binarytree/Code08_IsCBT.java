@@ -51,4 +51,59 @@ public class Code08_IsCBT {
         }
         return true;
     }
+
+    /**
+     * 通过二叉树递归来判断当前树是否为完全二叉树
+     *
+     * @param root 二叉树根节点
+     * @return 是否为完全二叉树
+     */
+    public boolean isCBT1(Node root) {
+        return process(root).isCBT;
+    }
+
+    // 需要子树的信息
+    private static class Info {
+        public boolean isFBT;
+        public boolean isCBT;
+        public int height;
+
+        public Info(boolean isFBT, boolean isCBT, int height) {
+            this.isFBT = isFBT;
+            this.isCBT = isCBT;
+            this.height = height;
+        }
+    }
+
+    /**
+     * 是完全二叉树的条件
+     * 1.左右子树都是满二叉树
+     * 2.左子树为完全二叉树，右子树为满二叉树，且左子树高度比右子树高度多1
+     * 3.左子树为满二叉树，右子树为完全二叉树，且左子树高度与右子树高度相同
+     *
+     * @param head 当前树头节点
+     * @return 当前树信息
+     */
+    public Info process(Node head) {
+        // 默认空树的情况
+        if (head == null) return new Info(true, true, 0);
+        Info leftInfo = process(head.left);
+        Info rightInfo = process(head.right);
+        // 当前数高度为子树最大高度+1
+        int height = Math.max(leftInfo.height, rightInfo.height) + 1;
+        // 如果左右子树都是满二叉树且高度相同则该树为满二叉树
+        boolean isFBT = leftInfo.isFBT && rightInfo.isFBT && leftInfo.height == rightInfo.height;
+        // 如果是满二叉树则也就是完全二叉树
+        boolean isCBT = isFBT;
+        // 当左子树为完全二叉树，右子树为满二叉树，且左子树高度比右子树高度多1，那么该树为完全二叉树
+        if (leftInfo.isCBT && rightInfo.isFBT && leftInfo.height == rightInfo.height + 1) {
+            isCBT = true;
+        }
+        // 当左子树为满二叉树，右子树为完全二叉树，且左子树高度与右子树高度相同，那么该树为完全二叉树
+        else if (leftInfo.isFBT && rightInfo.isCBT && leftInfo.height == rightInfo.height) {
+            isCBT = true;
+        }
+        // 返回给父树的信息
+        return new Info(isFBT, isCBT, height);
+    }
 }
