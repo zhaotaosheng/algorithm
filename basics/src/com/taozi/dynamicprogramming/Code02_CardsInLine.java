@@ -26,12 +26,12 @@ public class Code02_CardsInLine {
     }
 
     /**
-     * 先手姿态拿牌
+     * 先手姿态拿牌，先手一定会按照最大分数的方式取
      *
      * @param arr   纸牌
      * @param left  纸牌左边界
      * @param right 纸牌右边界
-     * @return 先手一定会按照最大分数的方式取
+     * @return 先手获得的最好分数
      */
     private int first(int[] arr, int left, int right) {
         // 如果就剩一张牌，那先手可以获得这个分数
@@ -47,12 +47,12 @@ public class Code02_CardsInLine {
     }
 
     /**
-     * 后手姿态拿牌
+     * 后手姿态拿牌，先手一定会让后手拿到最小的分数
      *
      * @param arr   纸牌
      * @param left  纸牌左边界
      * @param right 纸牌右边界
-     * @return 先手一定会让后手拿到最小的分数
+     * @return 后手获得的最好分数
      */
     private int later(int[] arr, int left, int right) {
         // 如果就剩一张牌，先手拿走后，后手得不到分
@@ -70,7 +70,7 @@ public class Code02_CardsInLine {
     public int win1(int[] arr) {
         int[][] firstDp = new int[arr.length][arr.length];
         int[][] laterDp = new int[arr.length][arr.length];
-        for (int i = 0; i < arr.length - 1; i++) {
+        for (int i = 0; i < arr.length; i++) {
             Arrays.fill(firstDp[i], -1);
             Arrays.fill(laterDp[i], -1);
         }
@@ -113,22 +113,54 @@ public class Code02_CardsInLine {
         return ans;
     }
 
+    /**
+     * 行为左边界位置，列为右边界位置
+     * firstDp                              |laterDp
+     * -------------------------------------|-------------------------------------
+     * |     | (0) | (1) | (2) | (3) | (4) |||     | (0) | (1) | (2) | (3) | (4) |
+     * -------------------------------------|-------------------------------------
+     * | (0) |  7  |  7  |  20 |  23 |  24 ||| (0) |  0  |  4  |  7  |  19 |  19 |
+     * -------------------------------------|-------------------------------------
+     * | (1) |  X  |  4  |  16 |  19 |  19 ||| (1) |  X  |  0  |  4  |  16 |  17 |
+     * -------------------------------------|-------------------------------------
+     * | (2) |  X  |  X  |  16 |  16 |  17 ||| (2) |  X  |  X  |  0  |  15 |  15 |
+     * -------------------------------------|-------------------------------------
+     * | (3) |  X  |  X  |  X  |  15 |  15 ||| (3) |  X  |  X  |  X  |  0  |  1  |
+     * -------------------------------------|-------------------------------------
+     * | (4) |  X  |  X  |  X  |  X  |  1  ||| (4) |  X  |  X  |  X  |  X  |  0  |
+     * -------------------------------------|-------------------------------------
+     * 1）base case，left = right时，firstDp[left][right] = arr[left]，laterDp[left][right] = 0
+     * 2）根据递归方式来看firstDp[left][right]依赖于laterDp[left+1][right]和laterDp[left][right-1]
+     * 3）根据递归方式来看laterDp[left][right]依赖于firstDp[left+1][right]和firstDp[left][right-1]
+     * 4）按照对角线的形式依次填满表，(0,1)(1,2)(2,3)(3,4)...
+     */
     public int win2(int[] arr) {
         int[][] firstDp = new int[arr.length][arr.length];
         int[][] laterDp = new int[arr.length][arr.length];
-        for (int i = 0; i < arr.length - 1; i++) {
-            Arrays.fill(firstDp[i], -1);
-            Arrays.fill(laterDp[i], -1);
+        for (int i = 0; i < arr.length; i++) {
+            firstDp[i][i] = arr[i];
         }
-        int firstScore = first1(arr, 0, arr.length - 1, firstDp, laterDp);
-        int laterScore = later1(arr, 0, arr.length - 1, firstDp, laterDp);
-        return Math.max(firstScore, laterScore);
+        // 从第一列开始沿右下对角线填数
+        for (int i = 1; i < arr.length; i++) {
+            // row相当于left坐标
+            int row = 0;
+            // col相当于right坐标
+            int col = i;
+            while (col < arr.length) {
+                firstDp[row][col] = Math.max(arr[row] + laterDp[row + 1][col], arr[col] + laterDp[row][col - 1]);
+                laterDp[row][col] = Math.min(firstDp[row + 1][col], firstDp[row][col - 1]);
+                row++;
+                col++;
+            }
+        }
+        return Math.max(firstDp[0][arr.length - 1], laterDp[0][arr.length - 1]);
     }
 
     public static void main(String[] args) {
 //        int[] arr = {5, 7, 4, 5, 8, 1, 6, 0, 3, 4, 6, 1, 7};
-        int[] arr = {5, 7, 4, 0, 3, 4, 6, 1};
+        int[] arr = {7, 4, 16, 15, 1};
         System.out.println(new Code02_CardsInLine().win(arr));
         System.out.println(new Code02_CardsInLine().win1(arr));
+        System.out.println(new Code02_CardsInLine().win2(arr));
     }
 }
