@@ -22,7 +22,7 @@ public class Code14_MinCoinsEveryPaperDifferent {
     }
 
     /**
-     * 在[cur,arr.length)访问上组成remain金额的最少货币数
+     * 在[cur,arr.length)范围上组成remain金额的最少货币数
      *
      * @param cur    当前要考虑的货币
      * @param remain 还有多少金额没处理
