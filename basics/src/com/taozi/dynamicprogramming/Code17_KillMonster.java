@@ -66,23 +66,23 @@ public class Code17_KillMonster {
         return dp[k][N] / Math.pow(M + 1, k);
     }
 
-    public static void main(String[] args) {
-        int NMax = 10;
-        int MMax = 10;
-        int KMax = 10;
-        int testTime = 200;
-        System.out.println("测试开始");
-        for (int i = 0; i < testTime; i++) {
-            int N = (int) (Math.random() * NMax);
-            int M = (int) (Math.random() * MMax);
-            int K = (int) (Math.random() * KMax);
-            double ans1 = dp1(N, M, K);
-            double ans2 = killMonster(N, M, K);
-            if (ans1 != ans2) {
-                System.out.println("Oops!");
-                break;
+    public static double dp2(int N, int M, int k) {
+        if (N < 1 || M < 1 || k < 1) {
+            return 0;
+        }
+        long[][] dp = new long[k + 1][N + 1];
+        dp[0][0] = 1;
+        for (int counts = 1; counts < k + 1; counts++) {
+            dp[counts][0] = (long) Math.pow(M + 1, counts);
+            for (int hp = 1; hp < N + 1; hp++) {
+                dp[counts][hp] = dp[counts][hp - 1] + dp[counts - 1][hp];
+                if (hp - 1 - M < 0) {
+                    dp[counts][hp] -= Math.pow(M + 1, counts - 1);
+                } else {
+                    dp[counts][hp] -= dp[counts - 1][hp - 1 - M];
+                }
             }
         }
-        System.out.println("测试结束");
+        return dp[k][N] / Math.pow(M + 1, k);
     }
 }
