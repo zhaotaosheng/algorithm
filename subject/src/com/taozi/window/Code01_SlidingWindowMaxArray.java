@@ -22,7 +22,7 @@ public class Code01_SlidingWindowMaxArray {
         // 窗口右边界R一直向右滑动直到滑出数组
         for (int R = 0; R < arr.length; R++) {
             // 弹出队列尾部所有小于当前位置值的数，因为窗口已经包含比他们大的数值arr[R]了
-            while (!window.isEmpty() && arr[window.peekLast()] < arr[R]) {
+            while (!window.isEmpty() && arr[window.peekLast()] <= arr[R]) {
                 window.pollLast();
             }
             // 将该位置加入到窗口更新结构尾部
