@@ -30,7 +30,7 @@ public class Code01_MonotonousStack {
         // 栈只用来保存位置
         Stack<Integer> stack = new Stack<>();
         for (int cur = 0; cur < arr.length; cur++) {
-            while (!stack.isEmpty() && stack.peek() > arr[cur]) {
+            while (!stack.isEmpty() && arr[stack.peek()] > arr[cur]) {
                 // 如果当前位置的数引起栈顶弹出，说明当前位置数是第一个在[栈顶,arr.length)范围上小于arr[栈顶]的数
                 // 结算当前栈顶的结果
                 Integer index = stack.pop();
@@ -65,7 +65,7 @@ public class Code01_MonotonousStack {
         // 栈只用来保存具有相同大小的位置
         Stack<List<Integer>> stack = new Stack<>();
         for (int cur = 0; cur < arr.length; cur++) {
-            while (!stack.isEmpty() && stack.peek().get(0) > arr[cur]) {
+            while (!stack.isEmpty() && arr[stack.peek().get(0)] > arr[cur]) {
                 // 如果当前位置的数引起栈顶弹出，说明当前位置数是第一个在[栈顶,arr.length)范围上小于arr[栈顶]的数
                 // 结算当前栈顶包含所有位置的链表的结果
                 List<Integer> indexList = stack.pop();
@@ -77,7 +77,7 @@ public class Code01_MonotonousStack {
                 }
             }
             // 如果当前位置的数与栈顶相等，那么加到链表里
-            if (!stack.isEmpty() && stack.peek().get(0) == arr[cur]) {
+            if (!stack.isEmpty() && arr[stack.peek().get(0)] == arr[cur]) {
                 stack.peek().add(cur);
             } else {
                 // 将当前位置生成小链表入栈，等待后续结算
