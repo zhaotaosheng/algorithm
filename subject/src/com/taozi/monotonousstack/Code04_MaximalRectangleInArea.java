@@ -25,16 +25,16 @@ public class Code04_MaximalRectangleInArea {
             // 下边就是常规求直方图最大矩形面积
             for (int col = 0; col < histogram.length; col++) {
                 while (!stack.isEmpty() && histogram[stack.peek()] >= histogram[col]) {
-                    Integer pop = stack.pop();
+                    Integer cur = stack.pop();
                     int leftLess = stack.isEmpty() ? -1 : stack.peek();
-                    res = Math.max(res, (col - leftLess - 1) * histogram[pop]);
+                    res = Math.max(res, (col - leftLess - 1) * histogram[cur]);
                 }
                 stack.push(col);
             }
             while (!stack.isEmpty()) {
-                Integer pop = stack.pop();
+                Integer cur = stack.pop();
                 int leftLess = stack.isEmpty() ? -1 : stack.peek();
-                res = Math.max(res, (histogram.length - leftLess - 1) * histogram[pop]);
+                res = Math.max(res, (histogram.length - leftLess - 1) * histogram[cur]);
             }
         }
         return res;
