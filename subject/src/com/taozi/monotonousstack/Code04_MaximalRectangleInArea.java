@@ -16,10 +16,13 @@ public class Code04_MaximalRectangleInArea {
         int res = 0;
         Stack<Integer> stack = new Stack<>();
         int[] histogram = new int[matrix[0].length];
+        // 求出分别以row行为底的直方图的最大面积就是子矩形中最多1的数量
         for (int row = 0; row < matrix.length; row++) {
+            // 构建以row行为底的直方图，如果matrix[row][col] == '0'表示它与上一行无法连通，所以高度归零
             for (int col = 0; col < histogram.length; col++) {
                 histogram[col] = matrix[row][col] == '0' ? 0 : histogram[col] + 1;
             }
+            // 下边就是常规求直方图最大矩形面积
             for (int col = 0; col < histogram.length; col++) {
                 while (!stack.isEmpty() && histogram[stack.peek()] >= histogram[col]) {
                     Integer pop = stack.pop();
