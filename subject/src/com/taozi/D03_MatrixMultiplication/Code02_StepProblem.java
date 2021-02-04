@@ -26,11 +26,11 @@ public class Code02_StepProblem {
         if (n == 1 || n == 2) return n;
         int[][] base = {{1, 1},
                         {1, 0}};
-        int[][] res = matrixPower1(base, n - 2);
+        int[][] res = matrixPower(base, n - 2);
         return 2 * res[0][0] + res[1][0];
     }
 
-    private static int[][] matrixPower1(int[][] base, int power) {
+    private static int[][] matrixPower(int[][] base, int power) {
         int[][] res = new int[base.length][base[0].length];
         for (int i = 0; i < res.length; i++) {
             res[i][i] = 1;
