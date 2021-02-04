@@ -10,7 +10,12 @@ public class Code01_FibonacciProblem {
 
     /**
      * f(n) = f(n-1) + f(n-2)，最高为n-2，所以base是2阶矩阵
-     * |fn,fn-1| = |f2,f1| * base的n-2次方
+     * f1 = 1、f2 = 1、f3 = 2、f4 = 3
+     * |f3,f2| = |f2,f1| * base
+     * |f4,f3| = |f3,f2| * base
+     * 得出base = {{1，1},
+     *             {1，0}}
+     * |fn,fn-1| = |1,1| * base的n-2次方
      *
      * @param n 第n项
      * @return 第n项值
@@ -20,7 +25,7 @@ public class Code01_FibonacciProblem {
         if (n == 1 || n == 2) return 1;
         int[][] base = {{1, 1},
                         {1, 0}};
-        int[][] res = matrixPower1(base, n - 2);
+        int[][] res = matrixPower(base, n - 2);
         return res[0][0] + res[1][0];
     }
 
@@ -31,7 +36,7 @@ public class Code01_FibonacciProblem {
      * @param power 次方数
      * @return 矩阵
      */
-    private static int[][] matrixPower1(int[][] base, int power) {
+    private static int[][] matrixPower(int[][] base, int power) {
         int[][] res = new int[base.length][base[0].length];
         // 对角线为1的矩阵就是1
         for (int i = 0; i < res.length; i++) {
