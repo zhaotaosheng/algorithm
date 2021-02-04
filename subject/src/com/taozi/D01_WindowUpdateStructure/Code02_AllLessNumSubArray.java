@@ -1,4 +1,4 @@
-package com.taozi.window;
+package com.taozi.D01_WindowUpdateStructure;
 
 import java.util.LinkedList;
 
