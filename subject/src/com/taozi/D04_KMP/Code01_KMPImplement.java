@@ -65,7 +65,7 @@ public class Code01_KMPImplement {
         // 也代表某一位next数组对应的下一个位置
         int cn = 0;
         while (i < str.length) {
-            // 如果中了这个分支，说明0~cn就是i位置要求的答案
+            // 如果中了这个分支，说明0~cn就是i位置要求的答案，因为0~cn-1一定是符合的
             if (str[i - 1] == str[cn]) {
                 next[i] = cn + 1;
                 i++;
